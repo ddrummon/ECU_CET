@@ -1,4 +1,4 @@
-# ecu_cet
+# ecu_cet - ddrummon
 Repository for ECU CET scripts
 
 aaaa.py is a simple program to get the INET6 address using gethostaddr() function.
