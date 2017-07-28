@@ -2,7 +2,9 @@
 #
 # ipv6check.py: This is small python program to check the existence
 # of an AAAA DNS record for a qualified domain name.
-
+#
+# TODO: Add CLI flags so we are able to pass in an output filename
+#
 
 import dns.resolver
 import datetime
