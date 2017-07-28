@@ -1,11 +1,13 @@
-# ECU_CET - Technology Systems Scripts
-Repository of scripts used in research projects in the: <br>
-East Carolina University <br>
-College of Engineering and Technology <br>
-Technology Systems Department <br>
+# ECU - Technology Systems - Scripts
 
-Scipts:
-<br>
-ipv6check.py<nbsp>:<nbsp>is a program that uses dnspython to query a list of domains for AAAA records.
-<br>
-domains.txt<nbsp>:<nbsp>is the list of domain names to check for INET6 addresses.
+This is a repository of scripts used in some of the research projects in the: <br>
+
+<nbsp><nbsp><nbsp><nbsp>East Carolina University <br>
+<nbsp><nbsp><nbsp><nbsp>College of Engineering and Technology <br>
+<nbsp><nbsp><nbsp><nbsp>Technology Systems Department <br>
+
+Scripts:
+<ul>
+  <li>ipv6check.py<nbsp><nbsp><nbsp><nbsp>is a program that uses dnspython to query a list of domains for AAAA records.</li>
+  <li>domains.txt<nbsp><nbsp><nbsp><nbsp><nbsp><nbsp>is the list of domain names to check for INET6 addresses.</li>
+</ul>
