@@ -1,103 +1,56 @@
 #!/usr/bin/env python
 #
-# ipv6check.py: This is small python program to check the existance
-# of a AAAA DNS record for a qualified domain name.
+# ipv6check.py: This is small python program to check the existence
+# of an AAAA DNS record for a qualified domain name.
 
 
-import os, sys, time, csv
-import dns.message, dns.query, dns.resolver
+import dns.resolver
+import datetime
 
-DNSSERVERS = [
-    ("Google", "8.8.8.8"),
-    ]
+dns_resolver = dns.resolver.Resolver()
+dns_resolver.nameservers = ['8.8.8.8']
 
-RETRIES=3
-TIMEOUT=3
-
-# List of DNS names to test for presence of AAAA records
-sitenames = [
-    "www.bing.com.",
-    "www.netflix.com.",
-    ]
-
-
-"""
-"wwww.google.com",
-"www.netflix.com.",
-"""
-yes_v6 = 0
+v6 = 0
 no_v6 = 0
-no_resp = 0
+no_ns = 0
+dns_timeout = 0
+domain_ct = 0
 
-# Read csv in as a list LARGE list.
-# TODO: convert this to a database where we can store the domains and the results
-"""
+fn = "ipv6-domains_20170729-1523.txt"
+
 with open('domains.txt', 'r') as f:
-    sitenames = ["www." + line.lower().rstrip() for line in f]
-#    sitenames = [line.lower().rstrip() for line in f]
+    domains = ["www." + line.lower().rstrip() for line in f]
 
-print(sitenames)
-"""
+for domain in domains:
+    try:
+        idx = 0
+        domain_ct += 1
+        answers = dns_resolver.query(domain, 'AAAA')
+        for rdata in answers:
+            while idx == 0:
+                print("{0:6} {1:45}: {2}".format(domain_ct, domain, rdata))
+                with open(fn, 'a') as f:
+                    f.write(domain + "\n")
+                v6 += 1
+                idx += 1
+    except dns.resolver.NoAnswer:
+        print("{0:6} {1:45}: No IPv6 Address for domain.".format(domain_ct, domain))
+        no_v6 += 1
+    except dns.resolver.NXDOMAIN:
+        print("{0:6} {1:45}: Not a valid domain.".format(domain_ct, domain))
+        invalid += 1
+    except dns.resolver.NoNameservers:
+        print("{0:6} {1:45}: No Name Servers for domain.".format(domain_ct, domain))
+        no_ns += 1
+    except dns.exception.Timeout:
+        print("{0:6} {1:45}: DNS Query Timed Out.".format(domain_ct, domain))
+        dns_timeout += 1
 
-def send_query_udp(qname, res_name, res_ip, timeout, retries):
-    gotresponse = False
-    res = None
-    msg = dns.message.make_query(qname, dns.rdatatype.AAAA)
-    while (not gotresponse and (retries > 0)):
-        retries -= 1
-        try:
-            ## print "DEBUG: query %s %s" % (res_ip, qname)
-            res = dns.query.udp(msg, res_ip, timeout=timeout)
-            gotresponse = True
-        except dns.exception.Timeout:
-            pass
-    return res
+print("\nDomains with an IPv6 Address: {0}".format(v6))
+print("Domains with no IPv6 Address: {0}".format(no_v6))
+print("Domains with no nameservers: {0}".format(no_ns))
+print("Domains that timedout on query: {0}".format(dns_timeout))
+print("Total Domains queried: {0}".format(v6 + no_v6 + no_ns + dns_timeout))
 
-for res_name, resp_ip in DNSSERVERS:
-    for qname in sitenames:
-        for rdata in dns.resolver.query(qname, 'AAAA'):
-            if rdata == KeyError:
-                print("{0}:{1} -> {2} DNS query timed out".format(res_name, res_ip, qname))
-                continue
-            elif rdata == dns.resolver.NoAnswer:
-                print("{0}:{1} -> {2} No AAAA record returned".format(res_name, res_ip, qname))
-                continue
-            else:
-                print("{0}:{1} -> {2} -> {3}".format(res_name, resp_ip, qname, rdata))
 
-"""
-for res_name, resp_ip in DNSSERVERS:
-    for qname in sitenames:
-        for rdata in dns.resolver.query(qname, 'AAAA'):
-            if rdata is KeyError:
-                print("{0}:{1} -> {2} DNS query timed out".format(res_name, res_ip, qname))
-            elif rdata.address is dns.resolver.NoAnswer:
-                print("{0}:{1} -> {2} DNS query timed out".format(res_name, res_ip, qname))
-            else:
-                print("{0}:{1} -> {2} -> {3}".format(res_name, resp_ip, qname, rdata.address))
-"""
-"""
-for res_name, res_ip in DNSSERVERS:
-    for qname in sitenames:
-        res = send_query_udp(qname, res_name, res_ip, TIMEOUT, RETRIES)
-        if res == None:
-            rc = 1
-            print("{0}:{1} -> {2} DNS query timed out".format(res_name, res_ip, qname))
-            no_resp += 1
-            continue
-        for rrset in res.answer:
-            #print(res)
-            if rrset.rdtype == 28:             # RR type code for AAAA
-                print("{0}:{1} -> {2} AAAA Record : {3}".format(res_name, res_ip, qname, res.answer))
-                yes_v6 += 1
-                break
-        else:
-            rc = 1
-            print("{0}:{1} -> {2} No AAAA record returned".format(res_name, res_ip, qname))
-            no_v6 += 1
-"""
-print("Number of sites with AAAA record: {0}".format(yes_v6))
-print("Number of sites without  AAAA record: {0}".format(no_v6))
-print("Number of sites with no DNS response: {0}".format(no_resp))
-print("Total number of sites queried: {0}".format(yes_v6 + no_v6 + no_resp))
 
