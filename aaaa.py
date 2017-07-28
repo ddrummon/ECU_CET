@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
+import csv
+import dns.resolver
 
 #domains = ("www.google.com", "www.facebook.com", "www.amazon.com", "test.test")
 
@@ -30,6 +32,8 @@ for domain in domains:
             yes_v6 +=1
             yes_v4 +=1
             print(": {0:^6} : {1:45} : {2:45} : {3:45}:".format(domainct, domain, ipv6, ipv4))
+        with open('ipv6-domains-no-www.txt', 'a') as f:
+            f.write(domain + "\n")
     except IndexError:
         no_v6 += 1
         print(": {0:^6} : {1:45} : {2:45} : {3:45}:".format(domainct, domain, "NONE", ipv4))
