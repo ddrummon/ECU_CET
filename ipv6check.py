@@ -36,6 +36,11 @@ def parse_arguments():
                         dest="resolver",
                         default='8.8.8.8',
                         help="DNS Server to query.")
+    parser.add_argument("-w", "--www",
+                        action='store_false',
+                        dest='www',
+                        default=True,
+                        help="Include www. prefix in queried domain name.")
     parser.add_argument("-d", "--display",
                         action="store_true",
                         dest="display",
@@ -61,7 +66,7 @@ def get_domains(infile):
     domains = data['Domain Name']
     return domains
 
-def ipv6check(outfile, resolver, display, domains):
+def ipv6check(outfile, resolver, display, www, domains):
     # Set some variables so we can get some statistics
     v6 = 0
     no_v6 = 0
@@ -80,7 +85,10 @@ def ipv6check(outfile, resolver, display, domains):
         fout.write("{0},{1},{2}\n".format("Count","Domain","IPv6 Response"))
         printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
         for i, domain in enumerate(domains):
-            fqdn = "www." + str(domain)
+            if www is True:
+                fqdn = "www." + str(domain)
+            else:
+                fqdn = domain
             try:
                 idx = 0
                 domain_ct += 1
@@ -158,7 +166,7 @@ def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=
 
 if __name__ == "__main__":
     args = parse_arguments()
-    ipv6check(args.outfile, args.resolver, args.display, get_domains(args.infile))
+    ipv6check(args.outfile, args.resolver, args.display, args.www, get_domains(args.infile))
 
 
 
