@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
 # ipv6check.py: This is small python program to check the existence
 # of an AAAA DNS record for a qualified domain name.
@@ -130,7 +131,7 @@ def ipv6check(outfile, resolver, display, domains):
     print("Domains with no nameservers: {0}".format(no_ns))
     print("Domains that timedout on query: {0}".format(dns_timeout))
     print("Domains that are not valid: {0}".format(invalid))
-    print("Total Domains queried: {0}".format(v6 + no_v6 + no_ns + invalid + dns_timeout))
+    print("Total Domains queried: {0}\n".format(v6 + no_v6 + no_ns + invalid + dns_timeout))
 
 # Print iterations progress
 def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█'):
@@ -148,7 +149,7 @@ def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r')
+    print("\r{0} |{1}| {2}% {3}".format(prefix, bar, percent, suffix), end="\r")
     # Print New Line on Complete
     if iteration == total:
         print()
