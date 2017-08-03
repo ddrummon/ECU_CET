@@ -7,6 +7,7 @@
 # TODO: Add function to fetch the current .gov domain list from data.gov
 # TODO: Add authoritative lookup logic
 # TODO: Add IPv4 lookup and reporting
+# TODO: Add logic to check domain.tld and www.domain.tld and report if there is a IPv6 address for each
 #
 
 import argparse
@@ -37,9 +38,9 @@ def parse_arguments():
                         default='8.8.8.8',
                         help="DNS Server to query.")
     parser.add_argument("-w", "--www",
-                        action='store_false',
+                        action='store_true',
                         dest='www',
-                        default=True,
+                        default=False,
                         help="Include www. prefix in queried domain name.")
     parser.add_argument("-d", "--display",
                         action="store_true",
